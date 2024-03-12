@@ -1,19 +1,20 @@
-<script  lang="ts" setup>
+<script lang="ts" setup>
 import { useDrag, useDrop } from 'vue3-dnd'
 import { ItemTypes } from './ItemTypes'
 import { computed, unref } from 'vue'
 
 const props = defineProps<{
-  id: string
+  id: number
   text: string
   type: string
-  moveCard: (type: string, id: string, to: number,same:boolean) => void
-  findCard: (type: string, id: string) => { index: number }
-  flyCard: (type: string, id: string, to: number) => void
+  moveCard: (type: string, id: number, to: number, same: boolean) => void
+  findCard: (type: string, id: number) => { index: number }
+  flyCard: (type: string, id: number, to: number) => void
+  dropCard: (item: any, monitor: any) => void
 }>()
 
 interface Item {
-  id: string
+  id: number
   originalIndex: number,
   text: string
   type: string
@@ -27,25 +28,26 @@ const [collect, drag] = useDrag(() => ({
     isDragging: monitor.isDragging(),
   }),
   end: (item, monitor) => {
-    // if (!monitor.didDrop()) return;
-    // const { id: droppedId, originalIndex, type } = monitor.getDropResult()
-    // if (type !== props.type) {
-    //   props.flyCard(type, droppedId,);
-    // }
+    
+    props.dropCard(item, monitor);
   },
 }))
 
 const [, drop] = useDrop(() => ({
   accept: ItemTypes.CARD,
   hover({ id: draggedId, type }: Item) {
-    if (draggedId !== props.id && type === props.type) {
+
+    if (draggedId != props.id) {
       const { index: overIndex } = props.findCard(props.type, props.id)
-      props.moveCard(type, draggedId, overIndex,type === props.type)
+      if (type === props.type) {
+        props.moveCard(type, draggedId, overIndex, type === props.type)
+      } else {
+       
+        props.flyCard(type, draggedId, overIndex)
+      }
+
     }
   },
-  drop(item) {
-    return item;
-  }
 }))
 
 // const { isDragging } = toRefs(collect)
