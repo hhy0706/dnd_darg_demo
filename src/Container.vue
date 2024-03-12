@@ -66,7 +66,7 @@ const findCard = (type: string, id: string | number) => {
 
 const moveCard = (type: string, id: string | number, atIndex: number, same: boolean) => {
 
-  const [arr1, arr2] = type === 'left' ? [cards.value, rightCards.value] : [rightCards.value, cards.value]
+  const [arr1, arr2] = getDragDropData(type)
   const { card, index } = findCard(type, id);
   if (same) {
     console.log("moveCard", arr1[atIndex])
@@ -76,14 +76,19 @@ const moveCard = (type: string, id: string | number, atIndex: number, same: bool
   }
 }
 const flyCard = (type: string, id: string | number, atIndex: number) => {
-  const [arr1, arr2] = type === 'left' ? [cards.value, rightCards.value] : [rightCards.value, cards.value]
+  const [arr1, arr2] = getDragDropData(type)
   const { card, index } = findCard(type, id);
   const otherIndex = arr2.findIndex(item => item.id == id);
   if (otherIndex != -1) {
     arr2.splice(otherIndex, 1);
   }
-  // card.type = card.type === 'left' ? 'right' : 'left';
   arr2.splice(atIndex, 0, card);
+}
+const getRemoveType = (type: string) => {
+  return type === 'left' ? 'right' : 'left';
+}
+const getDragDropData = (type: string) => {
+  return type === 'left' ? [cards.value, rightCards.value] : [rightCards.value, cards.value];
 }
 const dropCard = (item, monitor) => {
   if (monitor.didDrop()) {
@@ -91,21 +96,21 @@ const dropCard = (item, monitor) => {
     console.log(1111111111, type)
 
     if (type === undefined) {
-      const rType = item.type === 'left' ? 'right' : 'left';
-      const [arr1, arr2] = item.type === 'left' ? [cards.value, rightCards.value] : [rightCards.value, cards.value]
+      const rType = getRemoveType(type);
+      const [arr1, arr2] = getDragDropData(item.type)
       const { index: rIndex } = findCard(rType, item.id);
       if (rIndex != -1) arr2.splice(rIndex, 1);
       return;
     };
-    const rType = type === 'left' ? 'right' : 'left';
-    const [arr1, arr2] = type === 'left' ? [cards.value, rightCards.value] : [rightCards.value, cards.value]
+    const rType = getRemoveType(type);
+    const [arr1, arr2] = getDragDropData(type)
     const { index: rIndex } = findCard(rType, item.id);
     if (rIndex != -1) arr2.splice(rIndex, 1);
     const { card } = findCard(type, item.id);
     card.type = type;
   } else {
-    const rType = item.type === 'left' ? 'right' : 'left';
-    const [arr1, arr2] = item.type === 'left' ? [cards.value, rightCards.value] : [rightCards.value, cards.value]
+    const rType = getRemoveType(item.type);
+    const [arr1, arr2] = getDragDropData(item.type)
     const { index: rIndex } = findCard(rType, item.id);
     if (rIndex != -1) arr2.splice(rIndex, 1);
   }

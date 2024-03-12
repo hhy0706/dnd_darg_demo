@@ -28,7 +28,7 @@ const [collect, drag] = useDrag(() => ({
     isDragging: monitor.isDragging(),
   }),
   end: (item, monitor) => {
-    
+
     props.dropCard(item, monitor);
   },
 }))
@@ -42,7 +42,7 @@ const [, drop] = useDrop(() => ({
       if (type === props.type) {
         props.moveCard(type, draggedId, overIndex, type === props.type)
       } else {
-       
+
         props.flyCard(type, draggedId, overIndex)
       }
 
