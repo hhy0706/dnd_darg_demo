@@ -7,7 +7,7 @@ const props = defineProps<{
   id: number
   text: string
   type: string
-  moveCard: (type: string, id: number, to: number, same: boolean) => void
+  moveCard: (type: string, id: number, to: number) => void
   findCard: (type: string, id: number) => { index: number }
   flyCard: (type: string, id: number, to: number) => void
   dropCard: (item: any, monitor: any) => void
@@ -40,7 +40,7 @@ const [, drop] = useDrop(() => ({
     if (draggedId != props.id) {
       const { index: overIndex } = props.findCard(props.type, props.id)
       if (type === props.type) {
-        props.moveCard(type, draggedId, overIndex, type === props.type)
+        props.moveCard(type, draggedId, overIndex)
       } else {
 
         props.flyCard(type, draggedId, overIndex)
